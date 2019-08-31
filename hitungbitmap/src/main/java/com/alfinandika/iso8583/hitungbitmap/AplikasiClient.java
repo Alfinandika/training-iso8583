@@ -16,12 +16,37 @@ public class AplikasiClient {
         logonRequest.put(11, "834624");
         logonRequest.put(70, "001");
 
-        BigInteger bitmap = BigInteger.ZERO.setBit(128-0);
-        bitmap = bitmap.setBit(128-7);
-        bitmap = bitmap.setBit(128-11);
-        bitmap = bitmap.setBit(128-70);
+        AplikasiClient aplikasiClient = new AplikasiClient();
+        BigInteger bitmapRequest = aplikasiClient.hitungBitmap(logonRequest);
 
-        String strBitmap = bitmap.toString(2);
-        System.out.println("bitmap : ["+strBitmap+"]");
+        String strBitmap = bitmapRequest.toString(2);
+        System.out.println("bitmap binary : ["+strBitmap+"]");
+
+        String bitmapHex = bitmapRequest.toString(16);
+        System.out.println("bitmap hex : ["+bitmapHex+"]");
+
+        Map<Integer, String> logonResponse = new LinkedHashMap<Integer, String>();
+        logonResponse.put(7, formatterBit7.format(new Date()));
+        logonResponse.put(11, "834624");
+        logonResponse.put(39, "00");
+        logonResponse.put(70, "001");
+
+        BigInteger bitmapResponse = aplikasiClient.hitungBitmap(logonResponse);
+        System.out.println("bitmap binary response : ["+bitmapResponse.toString(2)+"]");
+        System.out.println("bitmap hex response : ["+bitmapResponse.toString(16)+"]");
+
+    }
+
+    public BigInteger hitungBitmap(Map<Integer, String> message){
+        BigInteger bitmap = BigInteger.ZERO;
+
+        for(Integer de : message.keySet()){
+            if (de > 64) {
+                bitmap = bitmap.setBit(128-1);
+            }
+            bitmap = bitmap.setBit(128-de);
+        }
+
+        return bitmap;
     }
 }
